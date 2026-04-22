@@ -20,6 +20,9 @@
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
     @keyframes gentlePulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.65; } }
     @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+    @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @keyframes checkmark { 0% { transform: scale(0) rotate(-45deg); opacity: 0; } 50% { transform: scale(1.2); } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
 
@@ -71,30 +74,48 @@
     .checkout-step.active { display: block; }
 
     .toast { animation: slideIn 0.3s ease-out; }
+
+    /* Cart Drawer */
+    #cart-overlay { animation: fadeInOverlay 0.3s ease-out; }
+    #cart-drawer { animation: slideInRight 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+    #cart-overlay.closing { animation: fadeInOverlay 0.3s ease-out reverse; }
+    #cart-drawer.closing { animation: slideInRight 0.35s ease-out reverse; }
+
+    /* Mobile Menu */
+    #mobile-menu { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.3s ease-out; }
+    #mobile-menu.open { max-height: 400px; opacity: 1; transition: all 0.3s ease-out; }
+
+    /* Nav Links */
+    .nav-link { position: relative; transition: color 0.3s ease; }
+    .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: #D4A574; transition: width 0.3s ease; }
+    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+    .nav-link.active { color: #D4A574; }
   </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
  <body class="h-full font-body" style="background-color: #FFF8F0; color: #A6563F;">
-  <div id="app-wrapper" class="w-full h-full overflow-auto"><!-- Navigation -->
+  <div id="app-wrapper" class="w-full h-full overflow-auto">
+   <!-- Navigation -->
    <nav id="navbar" class="w-full fixed top-0 left-0 z-50 transition-all duration-500" style="background: rgba(255,248,240,0.95); backdrop-filter: blur(12px);">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-     <div class="flex items-center gap-3">
-      <svg class="w-8 h-8" viewbox="0 0 40 40" fill="none">
-       <rect x="16" y="4" width="8" height="5" rx="1" fill="#D4A574" opacity="0.8" /> <rect x="18" y="2" width="4" height="3" rx="1" fill="#D4A574" /> <path d="M12 14 C12 11 14 9 20 9 C26 9 28 11 28 14 L28 34 C28 36.2 26.2 38 24 38 L16 38 C13.8 38 12 36.2 12 34 Z" fill="#F5C9B8" stroke="#D4A574" stroke-width="1.2" /> <path d="M12.5 22 C12.5 22 14 20 20 20 C26 20 27.5 22 27.5 22 L27.5 34 C27.5 35.9 26 37.5 24 37.5 L16 37.5 C14 37.5 12.5 35.9 12.5 34 Z" fill="#E8726D" opacity="0.6" />
-      </svg><span id="nav-brand" class="font-heading text-xl font-semibold" style="color: #A6563F;">Mini Parfums</span>
+    <div class="max-w-6xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between"><!-- Brand Logo -->
+     <div class="flex items-center gap-3 flex-shrink-0">
+      <svg class="w-8 h-8" viewbox="0 0 40 40" fill="none"><rect x="16" y="4" width="8" height="5" rx="1" fill="#D4A574" opacity="0.8" /> <rect x="18" y="2" width="4" height="3" rx="1" fill="#D4A574" /> <rect x="85" y="28" width="30" height="18" rx="2" fill="#FFF8F0" stroke="#D4A574" stroke-width="1.5" /> <path d="M12 14 C12 11 14 9 20 9 C26 9 28 11 28 14 L28 34 C28 36.2 26.2 38 24 38 L16 38 C13.8 38 12 36.2 12 34 Z" fill="#F5C9B8" stroke="#D4A574" stroke-width="1.2" /> <path d="M12.5 22 C12.5 22 14 20 20 20 C26 20 27.5 22 27.5 22 L27.5 34 C27.5 35.9 26 37.5 24 37.5 L16 37.5 C14 37.5 12.5 35.9 12.5 34 Z" fill="#E8726D" opacity="0.6" /> <path d="M75 65 C75 58 80 55 85 55 L87 230 C87 245 80 255 75 255 Z" fill="white" opacity="0.15" /> <rect x="72" y="150" width="56" height="50" rx="4" fill="rgba(255,248,240,0.5)" stroke="#D4A574" stroke-width="0.5" /> <text x="100" y="172" text-anchor="middle" fill="#A6563F" font-family="'Cormorant Garamond', serif" font-size="11" font-weight="600">
+        Essence
+       </text> <text x="100" y="188" text-anchor="middle" fill="#6B3347" font-family="'Lato', sans-serif" font-size="6" letter-spacing="2">
+        MINI PARFUM
+       </text>
+      </svg><span id="nav-brand" class="font-heading text-lg md:text-xl font-semibold hidden sm:inline" style="color: #A6563F;">Mini Parfums</span>
+     </div><!-- Desktop Menu -->
+     <div class="hidden md:flex items-center gap-8"><a href="#hero" class="nav-link text-sm tracking-widest uppercase" style="color: #A6563F;">Home</a> <a href="#collectie" class="nav-link text-sm tracking-widest uppercase" style="color: #A6563F;">Collectie</a> <a href="#winkel" class="nav-link text-sm tracking-widest uppercase" style="color: #A6563F;">Shop</a> <a href="#about" class="nav-link text-sm tracking-widest uppercase" style="color: #A6563F;">Over ons</a> <a href="#contact" class="nav-link text-sm tracking-widest uppercase" style="color: #A6563F;">Contact</a>
+     </div><!-- Right Actions -->
+     <div class="flex items-center gap-2 md:gap-4 flex-shrink-0"><button id="cart-btn" class="relative px-3 md:px-4 py-2 rounded-full font-semibold text-xs md:text-sm btn-primary transition" style="background-color: #A6563F; color: white;"> <span class="flex items-center gap-2"> <i data-lucide="shopping-bag" style="width: 18px; height: 18px;"></i> <span id="cart-count" class="text-xs font-bold">0</span> </span> </button> <button id="mobile-menu-btn" class="md:hidden p-2 transition" aria-label="Menu"> <i data-lucide="menu" style="color: #A6563F;" class="w-6 h-6"></i> </button>
      </div>
-     <div class="hidden md:flex items-center gap-8">
-      <a href="#collectie" class="text-sm tracking-widest uppercase hover:opacity-70 transition-opacity" style="color: #A6563F;">Collectie</a> <a href="#winkel" class="text-sm tracking-widest uppercase hover:opacity-70 transition-opacity" style="color: #A6563F;">Shop</a>
-     </div>
-     <div class="flex items-center gap-4"><button id="cart-toggle" class="relative px-4 py-2 rounded-full font-semibold text-sm btn-primary" style="background-color: #A6563F; color: white;"> <span class="flex items-center gap-2"> <i data-lucide="shopping-bag" style="width: 18px; height: 18px;"></i> <span id="cart-count" class="text-xs font-bold">0</span> </span> </button> <button id="mobile-menu-btn" class="md:hidden p-2" aria-label="Menu"> <i data-lucide="menu" style="color: #A6563F;" class="w-6 h-6"></i> </button>
-     </div>
-    </div>
-    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t" style="border-color: rgba(212,165,116,0.2);">
-     <a href="#collectie" class="block text-sm tracking-widest uppercase py-2" style="color: #A6563F;">Collectie</a> <a href="#winkel" class="block text-sm tracking-widest uppercase py-2" style="color: #A6563F;">Shop</a>
+    </div><!-- Mobile Menu (Collapsible) -->
+    <div id="mobile-menu" class="md:hidden px-4 pb-4 border-t" style="border-color: rgba(212,165,116,0.2);"><a href="#hero" class="mobile-nav-link block text-sm tracking-widest uppercase py-2.5" style="color: #A6563F;">Home</a> <a href="#collectie" class="mobile-nav-link block text-sm tracking-widest uppercase py-2.5" style="color: #A6563F;">Collectie</a> <a href="#winkel" class="mobile-nav-link block text-sm tracking-widest uppercase py-2.5" style="color: #A6563F;">Shop</a> <a href="#about" class="mobile-nav-link block text-sm tracking-widest uppercase py-2.5" style="color: #A6563F;">Over ons</a> <a href="#contact" class="mobile-nav-link block text-sm tracking-widest uppercase py-2.5" style="color: #A6563F;">Contact</a>
     </div>
    </nav><!-- Hero Section -->
-   <header class="w-full pt-24 pb-16 md:pt-32 md:pb-24 relative overflow-hidden" style="background: linear-gradient(160deg, #FFF8F0 0%, #F5C9B8 50%, #f0b5a3 100%);">
+   <header class="w-full pt-24 pb-16 md:pt-32 md:pb-24 relative overflow-hidden" style="background: linear-gradient(160deg, #FFF8F0 0%, #F5C9B8 50%, #f0b5a3 100%);" id="hero">
     <div class="absolute top-10 right-10 w-64 h-64 rounded-full anim-pulse-soft" style="background: radial-gradient(circle, rgba(212,165,116,0.15), transparent 70%);"></div>
     <div class="absolute bottom-0 left-0 w-48 h-48 rounded-full anim-pulse-soft" style="background: radial-gradient(circle, rgba(107,51,71,0.08), transparent 70%); animation-delay: 2s;"></div>
     <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12 md:gap-16 relative z-10">
@@ -102,15 +123,13 @@
       <p class="text-sm tracking-[0.3em] uppercase mb-4 anim-fade-up" style="color: #A6563F; opacity: 0.8;" id="hero-tagline">Elegantie in Miniatuur</p>
       <h1 id="hero-heading" class="font-heading text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 anim-fade-up-d1" style="color: #6B3347;">Ontdek Jouw <span class="shimmer-text">Signatuur</span> Geur</h1>
       <p id="hero-subtext" class="text-base md:text-lg leading-relaxed mb-8 anim-fade-up-d2 max-w-lg" style="color: #A6563F; opacity: 0.8;">Luxe parfumerie in de perfecte maat. Elke druppel is vakmanschap, elke geur een verhaal.</p>
-      <div class="anim-fade-up-d3 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-       <button id="cta-btn" class="btn-primary px-8 py-4 rounded-full font-semibold text-sm tracking-wider uppercase text-white" style="background-color: #A6563F;" onclick="document.getElementById('winkel').scrollIntoView({behavior:'smooth'})">Ontdek de Collectie</button> <button class="btn-primary px-8 py-4 rounded-full font-semibold text-sm tracking-wider uppercase border-2 bg-transparent" style="border-color: #A6563F; color: #A6563F;" onclick="document.getElementById('collectie').scrollIntoView({behavior:'smooth'})">Ons Verhaal</button>
+      <div class="anim-fade-up-d3 flex flex-col sm:flex-row gap-4 justify-center md:justify-start"><button id="cta-btn" class="btn-primary px-8 py-4 rounded-full font-semibold text-sm tracking-wider uppercase text-white" style="background-color: #A6563F;" onclick="document.getElementById('winkel').scrollIntoView({behavior:'smooth'})">Ontdek de Collectie</button> <button class="btn-primary px-8 py-4 rounded-full font-semibold text-sm tracking-wider uppercase border-2 bg-transparent" style="border-color: #A6563F; color: #A6563F;" onclick="document.getElementById('collectie').scrollIntoView({behavior:'smooth'})">Ons Verhaal</button>
       </div>
      </div>
      <div class="flex-1 flex justify-center anim-fade-up-d4">
       <div class="relative">
        <div class="anim-float">
-        <svg class="perfume-bottle w-56 h-72 md:w-72 md:h-96" viewbox="0 0 200 280" fill="none">
-         <rect x="80" y="8" width="40" height="20" rx="4" fill="#A6563F" /> <rect x="88" y="0" width="24" height="12" rx="6" fill="#D4A574" /> <rect x="85" y="28" width="30" height="18" rx="2" fill="#FFF8F0" stroke="#D4A574" stroke-width="1.5" /> <path d="M60 60 C60 50 65 45 100 45 C135 45 140 50 140 60 L140 230 C140 250 125 260 100 260 C75 260 60 250 60 230 Z" fill="url(#bottleGrad)" stroke="#D4A574" stroke-width="1" /> <path d="M62 120 C62 52 67 50 100 50 C133 50 138 52 138 120 L138 228 C138 248 123 258 100 258 C77 258 62 248 62 228 Z" fill="url(#liquidGrad)" opacity="0.7" /> <path d="M75 65 C75 58 80 55 85 55 L87 230 C87 245 80 255 75 255 Z" fill="white" opacity="0.15" /> <rect x="72" y="150" width="56" height="50" rx="4" fill="rgba(255,248,240,0.5)" stroke="#D4A574" stroke-width="0.5" /> <text x="100" y="172" text-anchor="middle" fill="#A6563F" font-family="'Cormorant Garamond', serif" font-size="11" font-weight="600">
+        <svg class="perfume-bottle w-56 h-72 md:w-72 md:h-96" viewbox="0 0 200 280" fill="none"><rect x="80" y="8" width="40" height="20" rx="4" fill="#A6563F" /> <rect x="88" y="0" width="24" height="12" rx="6" fill="#D4A574" /> <rect x="85" y="28" width="30" height="18" rx="2" fill="#FFF8F0" stroke="#D4A574" stroke-width="1.5" /> <path d="M60 60 C60 50 65 45 100 45 C135 45 140 50 140 60 L140 230 C140 250 125 260 100 260 C75 260 60 250 60 230 Z" fill="url(#bottleGrad)" stroke="#D4A574" stroke-width="1" /> <path d="M62 120 C62 52 67 50 100 50 C133 50 138 52 138 120 L138 228 C138 248 123 258 100 258 C77 258 62 248 62 228 Z" fill="url(#liquidGrad)" opacity="0.7" /> <path d="M75 65 C75 58 80 55 85 55 L87 230 C87 245 80 255 75 255 Z" fill="white" opacity="0.15" /> <rect x="72" y="150" width="56" height="50" rx="4" fill="rgba(255,248,240,0.5)" stroke="#D4A574" stroke-width="0.5" /> <text x="100" y="172" text-anchor="middle" fill="#A6563F" font-family="'Cormorant Garamond', serif" font-size="11" font-weight="600">
           Essence
          </text> <text x="100" y="188" text-anchor="middle" fill="#6B3347" font-family="'Lato', sans-serif" font-size="6" letter-spacing="2">
           MINI PARFUM
@@ -136,17 +155,13 @@
    </header><!-- Features Strip -->
    <section class="w-full py-10 border-y" style="background-color: #FFF8F0; border-color: rgba(212,165,116,0.2);">
     <div class="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-     <div class="flex flex-col items-center gap-2">
-      <i data-lucide="droplets" class="w-6 h-6" style="color: #D4A574;"></i> <span class="text-xs tracking-widest uppercase" style="color: #A6563F;">100% Natuurlijk</span>
+     <div class="flex flex-col items-center gap-2"><i data-lucide="droplets" class="w-6 h-6" style="color: #D4A574;"></i> <span class="text-xs tracking-widest uppercase" style="color: #A6563F;">100% Natuurlijk</span>
      </div>
-     <div class="flex flex-col items-center gap-2">
-      <i data-lucide="leaf" class="w-6 h-6" style="color: #D4A574;"></i> <span class="text-xs tracking-widest uppercase" style="color: #A6563F;">Duurzaam</span>
+     <div class="flex flex-col items-center gap-2"><i data-lucide="leaf" class="w-6 h-6" style="color: #D4A574;"></i> <span class="text-xs tracking-widest uppercase" style="color: #A6563F;">Duurzaam</span>
      </div>
-     <div class="flex flex-col items-center gap-2">
-      <i data-lucide="heart" class="w-6 h-6" style="color: #D4A574;"></i> <span class="text-xs tracking-widest uppercase" style="color: #A6563F;">Cruelty-Free</span>
+     <div class="flex flex-col items-center gap-2"><i data-lucide="heart" class="w-6 h-6" style="color: #D4A574;"></i> <span class="text-xs tracking-widest uppercase" style="color: #A6563F;">Cruelty-Free</span>
      </div>
-     <div class="flex flex-col items-center gap-2">
-      <i data-lucide="award" class="w-6 h-6" style="color: #D4A574;"></i> <span class="text-xs tracking-widest uppercase" style="color: #A6563F;">Artisanaal</span>
+     <div class="flex flex-col items-center gap-2"><i data-lucide="award" class="w-6 h-6" style="color: #D4A574;"></i> <span class="text-xs tracking-widest uppercase" style="color: #A6563F;">Artisanaal</span>
      </div>
     </div>
    </section><!-- Collection Section -->
@@ -169,7 +184,8 @@
      </div><!-- Search & Filter -->
      <div class="mb-8 space-y-4">
       <div class="flex flex-col md:flex-row gap-4">
-       <div class="flex-1 relative"><input type="text" id="search-input" placeholder="Zoeken..." class="w-full px-4 py-3 rounded-lg border outline-none focus:border-2" style="border-color: rgba(212,165,116,0.3); color: #6B3347;" onkeyup="filterProducts()"> <i data-lucide="search" class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5" style="color: #A6563F; opacity: 0.5;"></i>
+       <div class="flex-1 relative">
+        <input type="text" id="search-input" placeholder="Zoeken..." class="w-full px-4 py-3 rounded-lg border outline-none focus:border-2" style="border-color: rgba(212,165,116,0.3); color: #6B3347;" onkeyup="filterProducts()"> <i data-lucide="search" class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5" style="color: #A6563F; opacity: 0.5;"></i>
        </div><select id="sort-select" class="px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347; min-width: 160px;" onchange="filterProducts()"> <option value="newest">Nieuwste</option> <option value="price-low">Prijs ↑</option> <option value="price-high">Prijs ↓</option> <option value="name">A-Z</option> </select> <button onclick="clearFilters()" class="px-6 py-3 rounded-lg font-semibold text-sm tracking-wider uppercase transition" style="background-color: rgba(212,165,116,0.2); color: #A6563F;">Reset</button>
       </div>
      </div><!-- Product Grid (2-col mobile, 3-col tablet, 4-col desktop) -->
@@ -189,25 +205,64 @@
        <p class="text-center py-6" style="color: #A6563F; opacity: 0.6;">Nog leeg</p>
       </div>
       <div class="space-y-2 rounded-xl p-4 mb-6" style="background-color: #FFF8F0;">
-       <div class="flex justify-between text-sm">
-        <span style="color: #A6563F;">Subtotaal</span><span id="subtotal" class="font-semibold" style="color: #6B3347;">€0,00</span>
+       <div class="flex justify-between text-sm"><span style="color: #A6563F;">Subtotaal</span><span id="subtotal" class="font-semibold" style="color: #6B3347;">€0,00</span>
        </div>
-       <div class="flex justify-between text-sm">
-        <span style="color: #A6563F;">Verzending</span><span id="shipping" class="font-semibold" style="color: #6B3347;">€5,00</span>
+       <div class="flex justify-between text-sm"><span style="color: #A6563F;">Verzending</span><span id="shipping" class="font-semibold" style="color: #6B3347;">€5,00</span>
        </div>
-       <div class="border-t pt-2 flex justify-between font-bold" style="border-color: rgba(212,165,116,0.2); color: #6B3347;">
-        <span>Totaal</span><span id="total">€5,00</span>
+       <div class="border-t pt-2 flex justify-between font-bold" style="border-color: rgba(212,165,116,0.2); color: #6B3347;"><span>Totaal</span><span id="total">€5,00</span>
        </div>
       </div><button onclick="proceedToCheckout()" class="btn-primary w-full py-3 rounded-full text-sm tracking-wider uppercase text-white font-semibold" style="background-color: #A6563F;">Afrekenen</button>
+     </div>
+    </div>
+   </section><!-- About Section -->
+   <section id="about" class="w-full py-20 scroll-section" style="background-color: #FFF8F0;">
+    <div class="max-w-4xl mx-auto px-6">
+     <div class="text-center mb-12">
+      <div class="divider-line mx-auto mb-6"></div>
+      <h2 id="about-title" class="font-heading text-3xl md:text-5xl font-bold mb-4" style="color: #6B3347;">Over Ons</h2>
+     </div>
+     <div class="space-y-6 text-center md:text-left">
+      <p id="about-text-1" class="text-base md:text-lg leading-relaxed anim-fade-up" style="color: #A6563F;">Bij Mini Parfum geloven we dat luxe in de details zit. Onze mini parfums zijn zorgvuldig samengesteld voor wie elegantie wil ervaren, altijd en overal.</p>
+      <p id="about-text-2" class="text-base md:text-lg leading-relaxed anim-fade-up-d1" style="color: #A6563F;">Elke geur vertelt een verhaal — verfijnd, tijdloos en bewust. Met natuurlijke ingrediënten, duurzame keuzes en een passie voor vakmanschap brengen wij parfumerie terug naar haar essentie.</p>
+      <p id="about-text-3" class="font-heading text-2xl md:text-3xl font-bold anim-fade-up-d2 mt-8" style="color: #6B3347;">Klein van formaat, groots in beleving.</p>
+     </div>
+     <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="text-center p-8 rounded-2xl anim-fade-up-d2" style="background: linear-gradient(135deg, rgba(212,165,116,0.1), rgba(232,114,109,0.05));">
+       <i data-lucide="leaf" class="w-10 h-10 mx-auto mb-4" style="color: #D4A574;"></i>
+       <h3 class="font-heading text-lg font-bold mb-2" style="color: #6B3347;">100% Natuurlijk</h3>
+       <p class="text-sm" style="color: #A6563F; opacity: 0.8;">Alleen de fijnste natuurlijke ingrediënten in elk flesje</p>
+      </div>
+      <div class="text-center p-8 rounded-2xl anim-fade-up-d3" style="background: linear-gradient(135deg, rgba(212,165,116,0.1), rgba(232,114,109,0.05));">
+       <i data-lucide="heart" class="w-10 h-10 mx-auto mb-4" style="color: #D4A574;"></i>
+       <h3 class="font-heading text-lg font-bold mb-2" style="color: #6B3347;">Duurzaam &amp; Eerlijk</h3>
+       <p class="text-sm" style="color: #A6563F; opacity: 0.8;">Bewuste keuzes voor mens, dier en aarde</p>
+      </div>
+      <div class="text-center p-8 rounded-2xl anim-fade-up-d4" style="background: linear-gradient(135deg, rgba(212,165,116,0.1), rgba(232,114,109,0.05));">
+       <i data-lucide="sparkles" class="w-10 h-10 mx-auto mb-4" style="color: #D4A574;"></i>
+       <h3 class="font-heading text-lg font-bold mb-2" style="color: #6B3347;">Artisanaal Vakwerk</h3>
+       <p class="text-sm" style="color: #A6563F; opacity: 0.8;">Elke geur is een meesterwerk van vakmanschap</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Contact Section -->
+   <section id="contact" class="w-full py-20 scroll-section" style="background-color: #F5C9B8;">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+     <div class="divider-line mx-auto mb-6"></div>
+     <h2 class="font-heading text-3xl md:text-5xl font-bold mb-6" style="color: #6B3347;">Contact</h2>
+     <p class="text-base md:text-lg mb-12" style="color: #6B3347; opacity: 0.8;">Vragen? Wij helpen graag! Neem gerust contact op.</p>
+     <div class="flex flex-col sm:flex-row gap-6 justify-center">
+      <a href="mailto:hello@miniperfums.com" class="btn-primary px-8 py-4 rounded-full font-semibold text-sm tracking-wider uppercase text-white" style="background-color: #A6563F;">📧 E-mail</a> <a href="tel:+31612345678" class="btn-primary px-8 py-4 rounded-full font-semibold text-sm tracking-wider uppercase border-2 bg-transparent" style="border-color: #A6563F; color: #A6563F;">📱 Bellen</a>
      </div>
     </div>
    </section><!-- Checkout -->
    <div id="checkout-page" class="hidden fixed inset-0 z-50 w-full h-full overflow-y-auto" style="background: linear-gradient(to bottom, #FFF8F0, #F5C9B8);">
     <nav class="sticky top-0 z-40 border-b px-6 py-4" style="background: rgba(255,248,240,0.95); border-color: rgba(212,165,116,0.2);">
-     <div class="max-w-3xl mx-auto flex items-center justify-between"><span class="font-heading text-lg font-semibold" style="color: #A6563F;">Mini Parfums</span> <button onclick="exitCheckout()" class="text-2xl transition" style="color: #A6563F;">×</button>
+     <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <span class="font-heading text-lg font-semibold" style="color: #A6563F;">Mini Parfums</span> <button onclick="exitCheckout()" class="text-2xl transition" style="color: #A6563F;">×</button>
      </div>
     </nav>
-    <div class="max-w-3xl mx-auto px-6 py-12"><!-- Progress -->
+    <div class="max-w-3xl mx-auto px-6 py-12">
+     <!-- Progress -->
      <div class="mb-12">
       <div class="flex justify-between items-center mb-6">
        <div class="flex items-center gap-2">
@@ -232,40 +287,44 @@
        <div class="progress-fill" id="progress-fill" style="width: 33%;"></div>
       </div>
      </div><!-- Form -->
-     <form id="checkout-form" class="mb-8"><!-- Step 1 -->
+     <form id="checkout-form" class="mb-8">
+      <!-- Step 1 -->
       <div class="checkout-step active" id="step-content-1">
        <h2 class="font-heading text-3xl font-bold mb-6" style="color: #6B3347;">Persoonlijke Gegevens</h2>
        <div class="space-y-4">
-        <div class="grid grid-cols-2 gap-4"><input type="text" id="first-name" placeholder="Voornaam" required class="px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;"> <input type="text" id="last-name" placeholder="Achternaam" required class="px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;">
+        <div class="grid grid-cols-2 gap-4">
+         <input type="text" id="first-name" placeholder="Voornaam" required class="px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;"> <input type="text" id="last-name" placeholder="Achternaam" required class="px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;">
         </div><input type="email" id="email" placeholder="E-mail" required class="w-full px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;"> <input type="tel" id="phone" placeholder="Telefoon" required class="w-full px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;"> <select id="delivery-type" required class="w-full px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;"> <option value="">Verzendoptie kiezen...</option> <option value="verzenden">📬 Verzenden (€5)</option> <option value="ophalen">🏪 Ophalen (Gratis)</option> </select>
        </div>
-       <div class="mt-8 flex gap-3"><button type="button" onclick="exitCheckout()" class="flex-1 py-3 rounded-full text-sm tracking-wider uppercase border-2 font-semibold" style="border-color: #A6563F; color: #A6563F;">Annuleren</button> <button type="button" onclick="nextStep(1)" class="flex-1 py-3 rounded-full text-sm tracking-wider uppercase text-white font-semibold btn-primary" style="background-color: #A6563F;">Volgende</button>
+       <div class="mt-8 flex gap-3">
+        <button type="button" onclick="exitCheckout()" class="flex-1 py-3 rounded-full text-sm tracking-wider uppercase border-2 font-semibold" style="border-color: #A6563F; color: #A6563F;">Annuleren</button> <button type="button" onclick="nextStep(1)" class="flex-1 py-3 rounded-full text-sm tracking-wider uppercase text-white font-semibold btn-primary" style="background-color: #A6563F;">Volgende</button>
        </div>
       </div><!-- Step 2 -->
       <div class="checkout-step" id="step-content-2">
        <h2 class="font-heading text-3xl font-bold mb-6" style="color: #6B3347;">Bezorgadres</h2>
-       <div class="space-y-4"><input type="text" id="address" placeholder="Straat &amp; Huisnummer" required class="w-full px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;">
-        <div class="grid grid-cols-2 gap-4"><input type="text" id="postal" placeholder="Postcode" required class="px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;"> <input type="text" id="city" placeholder="Plaats" required class="px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;">
+       <div class="space-y-4">
+        <input type="text" id="address" placeholder="Straat &amp; Huisnummer" required class="w-full px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;">
+        <div class="grid grid-cols-2 gap-4">
+         <input type="text" id="postal" placeholder="Postcode" required class="px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;"> <input type="text" id="city" placeholder="Plaats" required class="px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;">
         </div><textarea id="notes" placeholder="Opmerkingen (optioneel)" rows="3" class="w-full px-4 py-3 rounded-lg border outline-none" style="border-color: rgba(212,165,116,0.3); color: #6B3347;"></textarea>
        </div>
-       <div class="mt-8 flex gap-3"><button type="button" onclick="prevStep(2)" class="flex-1 py-3 rounded-full text-sm tracking-wider uppercase border-2 font-semibold" style="border-color: #A6563F; color: #A6563F;">Terug</button> <button type="button" onclick="nextStep(2)" class="flex-1 py-3 rounded-full text-sm tracking-wider uppercase text-white font-semibold btn-primary" style="background-color: #A6563F;">Volgende</button>
+       <div class="mt-8 flex gap-3">
+        <button type="button" onclick="prevStep(2)" class="flex-1 py-3 rounded-full text-sm tracking-wider uppercase border-2 font-semibold" style="border-color: #A6563F; color: #A6563F;">Terug</button> <button type="button" onclick="nextStep(2)" class="flex-1 py-3 rounded-full text-sm tracking-wider uppercase text-white font-semibold btn-primary" style="background-color: #A6563F;">Volgende</button>
        </div>
       </div><!-- Step 3 -->
       <div class="checkout-step" id="step-content-3">
        <h2 class="font-heading text-3xl font-bold mb-6" style="color: #6B3347;">Review</h2>
        <div id="review-summary" class="space-y-4 p-6 rounded-2xl mb-6" style="background-color: #FFF8F0; border: 1px solid rgba(212,165,116,0.2);"></div>
        <div class="space-y-2 rounded-xl p-4 mb-6" style="background-color: #FFF8F0;">
-        <div class="flex justify-between text-sm">
-         <span style="color: #A6563F;">Subtotaal</span><span id="review-subtotal" class="font-semibold" style="color: #6B3347;">€0,00</span>
+        <div class="flex justify-between text-sm"><span style="color: #A6563F;">Subtotaal</span><span id="review-subtotal" class="font-semibold" style="color: #6B3347;">€0,00</span>
         </div>
-        <div class="flex justify-between text-sm">
-         <span style="color: #A6563F;">Verzending</span><span id="review-shipping" class="font-semibold" style="color: #6B3347;">€5,00</span>
+        <div class="flex justify-between text-sm"><span style="color: #A6563F;">Verzending</span><span id="review-shipping" class="font-semibold" style="color: #6B3347;">€5,00</span>
         </div>
-        <div class="border-t pt-2 flex justify-between font-bold" style="border-color: rgba(212,165,116,0.2); color: #6B3347;">
-         <span>Totaal</span><span id="review-total">€5,00</span>
+        <div class="border-t pt-2 flex justify-between font-bold" style="border-color: rgba(212,165,116,0.2); color: #6B3347;"><span>Totaal</span><span id="review-total">€5,00</span>
         </div>
        </div>
-       <div class="mt-8 flex gap-3"><button type="button" onclick="prevStep(3)" class="flex-1 py-3 rounded-full text-sm tracking-wider uppercase border-2 font-semibold" style="border-color: #A6563F; color: #A6563F;">Terug</button> <button type="submit" id="submit-btn" class="flex-1 py-3 rounded-full text-sm tracking-wider uppercase text-white font-semibold btn-primary" style="background-color: #A6563F;">Plaats Bestelling</button>
+       <div class="mt-8 flex gap-3">
+        <button type="button" onclick="prevStep(3)" class="flex-1 py-3 rounded-full text-sm tracking-wider uppercase border-2 font-semibold" style="border-color: #A6563F; color: #A6563F;">Terug</button> <button type="submit" id="submit-btn" class="flex-1 py-3 rounded-full text-sm tracking-wider uppercase text-white font-semibold btn-primary" style="background-color: #A6563F;">Plaats Bestelling</button>
        </div>
       </div>
      </form>
@@ -275,8 +334,7 @@
     <div class="max-w-3xl mx-auto px-6 py-16">
      <div class="text-center mb-12 anim-fade-up">
       <div class="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6" style="background: radial-gradient(circle, #A6563F, #6B3347); box-shadow: 0 10px 40px rgba(166, 86, 63, 0.25);">
-       <svg class="w-10 h-10 text-white" style="animation: checkmark 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-        <polyline points="20 6 9 17 4 12"></polyline>
+       <svg class="w-10 h-10 text-white" style="animation: checkmark 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline>
        </svg>
       </div>
       <h1 id="thank-you-title" class="font-heading text-5xl font-bold mb-4 anim-fade-up-d1" style="color: #6B3347;">Bedankt voor je bestelling!</h1>
@@ -361,19 +419,18 @@
        </div>
       </div>
      </div>
-     <div class="flex flex-col sm:flex-row gap-4"><button onclick="goBackToShop()" class="btn-primary flex-1 py-4 rounded-full text-sm tracking-wider uppercase text-white font-semibold" style="background-color: #A6563F;">← Terug naar Shop</button> <button onclick="shareOrder()" class="btn-primary flex-1 py-4 rounded-full text-sm tracking-wider uppercase border-2 bg-white font-semibold" style="border-color: #A6563F; color: #A6563F;">Delen 📤</button>
+     <div class="flex flex-col sm:flex-row gap-4">
+      <button onclick="goBackToShop()" class="btn-primary flex-1 py-4 rounded-full text-sm tracking-wider uppercase text-white font-semibold" style="background-color: #A6563F;">← Terug naar Shop</button> <button onclick="shareOrder()" class="btn-primary flex-1 py-4 rounded-full text-sm tracking-wider uppercase border-2 bg-white font-semibold" style="border-color: #A6563F; color: #A6563F;">Delen 📤</button>
      </div>
     </div>
    </div><!-- Footer -->
    <footer class="w-full py-12" style="background-color: #6B3347;">
     <div class="max-w-6xl mx-auto px-6">
      <div class="flex flex-col md:flex-row justify-between items-start gap-8 mb-8">
-      <div>
-       <span id="footer-brand" class="font-heading text-2xl font-semibold" style="color: #F5C9B8;">Mini Parfums</span>
+      <div><span id="footer-brand" class="font-heading text-2xl font-semibold" style="color: #F5C9B8;">Mini Parfums</span>
        <p class="text-sm mt-2" style="color: #F5C9B8; opacity: 0.6;">Elegantie in elke druppel</p>
       </div>
-      <div class="flex gap-4">
-       <a href="#" class="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110" style="background: rgba(212,165,116,0.15);"><i data-lucide="instagram" class="w-5 h-5" style="color: #D4A574;"></i></a> <a href="#" class="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110" style="background: rgba(212,165,116,0.15);"><i data-lucide="mail" class="w-5 h-5" style="color: #D4A574;"></i></a>
+      <div class="flex gap-4"><a href="https://www.instagram.com/mini.parfumss?igsh=MWJibWVjNmxhOXBmOA%3D%3D&amp;utm_source=qr" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110" style="background: rgba(212,165,116,0.15);"><i data-lucide="instagram" class="w-5 h-5" style="color: #D4A574;"></i></a> <a href="https://www.tiktok.com/@mini.parfumss?_r=1&amp;_t=ZG-95ke2UpMjTd" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110" style="background: rgba(212,165,116,0.15);"><i data-lucide="music" class="w-5 h-5" style="color: #D4A574;"></i></a> <a href="https://snapchat.com/t/3V3cJCrC" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110" style="background: rgba(212,165,116,0.15);"><i data-lucide="camera" class="w-5 h-5" style="color: #D4A574;"></i></a>
       </div>
      </div>
      <div class="border-t pt-6" style="border-color: rgba(245,201,184,0.15);">
@@ -381,6 +438,34 @@
      </div>
     </div>
    </footer>
+  </div><!-- Cart Drawer Overlay -->
+  <div id="cart-overlay" class="hidden fixed inset-0 z-40 bg-black bg-opacity-30" onclick="closeCartDrawer()"></div><!-- Cart Drawer -->
+  <div id="cart-drawer" class="hidden fixed right-0 top-0 h-full z-40 bg-white overflow-y-auto shadow-2xl" style="width: 100%; max-width: 450px;">
+   <div class="flex flex-col h-full"><!-- Cart Header -->
+    <div class="flex-shrink-0 p-6 border-b" style="border-color: rgba(212,165,116,0.2);">
+     <div class="flex items-center justify-between mb-4">
+      <h2 class="font-heading text-2xl font-bold" style="color: #6B3347;">Je Wagen</h2><button onclick="closeCartDrawer()" class="text-2xl transition hover:opacity-70" style="color: #A6563F;">×</button>
+     </div>
+     <div class="text-xs tracking-widest uppercase" style="color: #A6563F; opacity: 0.6;" id="cart-item-count">
+      0 artikelen
+     </div>
+    </div><!-- Cart Items -->
+    <div id="cart-drawer-items" class="flex-1 overflow-y-auto p-6 space-y-4">
+     <p class="text-center py-8" style="color: #A6563F; opacity: 0.6;">Nog leeg</p>
+    </div><!-- Cart Footer -->
+    <div class="flex-shrink-0 p-6 space-y-4 border-t" style="border-color: rgba(212,165,116,0.2);"><!-- Totals -->
+     <div class="space-y-2 rounded-xl p-4" style="background-color: #FFF8F0;">
+      <div class="flex justify-between text-sm"><span style="color: #A6563F;">Subtotaal</span> <span id="drawer-subtotal" class="font-semibold" style="color: #6B3347;">€0,00</span>
+      </div>
+      <div class="flex justify-between text-sm"><span style="color: #A6563F;">Verzending</span> <span id="drawer-shipping" class="font-semibold" style="color: #6B3347;">€5,00</span>
+      </div>
+      <div class="border-t pt-2 flex justify-between font-bold" style="border-color: rgba(212,165,116,0.2); color: #6B3347;"><span>Totaal</span> <span id="drawer-total">€5,00</span>
+      </div>
+     </div><!-- Action Buttons -->
+     <div class="space-y-2"><button onclick="proceedToCheckout()" class="btn-primary w-full py-3 rounded-full text-sm tracking-wider uppercase text-white font-semibold" style="background-color: #A6563F;">Afrekenen</button> <button onclick="closeCartDrawer()" class="w-full py-3 rounded-full text-sm tracking-wider uppercase border-2 font-semibold transition" style="border-color: #A6563F; color: #A6563F;">Verder Winkelen</button>
+     </div>
+    </div>
+   </div>
   </div>
   <script>
     const API_BASE = 'https://script.google.com/macros/s/AKfycbziFmO4b9b0830eOldc8U-zcIQgwm7TRNsnj6RebZboDa59q5v_i7Yj0s792DWF8cHeCQ/exec';
@@ -596,6 +681,7 @@
         showNotification('Winkelwagen is leeg');
         return;
       }
+      closeCartDrawer();
       currentStep = 1;
       document.getElementById('checkout-page').classList.remove('hidden');
       window.scrollTo(0, 0);
@@ -719,6 +805,7 @@
       thankYouPage.classList.remove('hidden');
       document.getElementById('app-wrapper').style.display = 'block';
       document.getElementById('order-number').textContent = orderId;
+      document.body.style.overflow = 'auto';
       window.scrollTo(0, 0);
     }
 
@@ -767,12 +854,100 @@
       setTimeout(() => toast.remove(), 3000);
     }
 
-    document.getElementById('cart-toggle').addEventListener('click', () => {
-      document.getElementById('winkel').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('cart-btn').addEventListener('click', openCartDrawer);
+    
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('open');
     });
 
+    // Close mobile menu when nav link clicked
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('mobile-menu').classList.remove('open');
+      });
+    });
+
+    // Active nav link tracking
+    function updateActiveNav() {
+      const sections = ['hero', 'collectie', 'winkel', 'about', 'contact'];
+      sections.forEach(section => {
+        const el = document.getElementById(section);
+        const link = document.querySelector(`a[href="#${section}"]`);
+        if (link && el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 150 && rect.bottom >= 150) {
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.mobile-nav-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+          }
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveNav);
+
+    function openCartDrawer() {
+      document.getElementById('cart-overlay').classList.remove('hidden');
+      document.getElementById('cart-drawer').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      renderCartDrawer();
+    }
+
+    function closeCartDrawer() {
+      document.getElementById('cart-overlay').classList.add('hidden');
+      document.getElementById('cart-drawer').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    function renderCartDrawer() {
+      const container = document.getElementById('cart-drawer-items');
+      if (cart.length === 0) {
+        container.innerHTML = '<p class="text-center py-8" style="color: #A6563F; opacity: 0.6;">Nog leeg</p>';
+        document.getElementById('cart-item-count').textContent = '0 artikelen';
+        updateDrawerTotals();
+        return;
+      }
+
+      container.innerHTML = '';
+      let totalItems = 0;
+      cart.forEach(item => {
+        totalItems += item.quantity;
+        const itemTotal = item.price * item.quantity;
+        const row = document.createElement('div');
+        row.className = 'rounded-lg border p-4 flex items-start justify-between gap-3 anim-slide-in';
+        row.style.borderColor = 'rgba(212,165,116,0.2)';
+        row.style.backgroundColor = '#FFF8F0';
+        row.innerHTML = `
+          <div class="flex-1 min-w-0">
+            <h4 class="font-semibold text-sm" style="color: #6B3347;">${item.name}</h4>
+            <p class="text-xs mt-1" style="color: #A6563F; opacity: 0.6;">€${item.price.toFixed(2)}</p>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <button onclick="updateQty('${item.id}', ${item.quantity - 1})" class="px-2 py-1 rounded text-xs font-bold text-white" style="background-color: #A6563F;">−</button>
+            <span class="px-2 text-sm font-semibold" style="color: #6B3347; min-width: 24px; text-align: center;">${item.quantity}</span>
+            <button onclick="updateQty('${item.id}', ${item.quantity + 1})" class="px-2 py-1 rounded text-xs font-bold text-white" style="background-color: #A6563F;">+</button>
+            <button onclick="removeCart('${item.id}'); renderCartDrawer();" class="ml-2 text-sm font-bold" style="color: #A6563F;">×</button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      document.getElementById('cart-item-count').textContent = totalItems + ' ' + (totalItems === 1 ? 'artikel' : 'artikelen');
+      updateDrawerTotals();
+    }
+
+    function updateDrawerTotals() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const total = subtotal + SHIPPING_COST;
+      document.getElementById('drawer-subtotal').textContent = '€' + subtotal.toFixed(2).replace('.', ',');
+      document.getElementById('drawer-shipping').textContent = '€' + SHIPPING_COST.toFixed(2).replace('.', ',');
+      document.getElementById('drawer-total').textContent = '€' + total.toFixed(2).replace('.', ',');
+    }
+
     document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-      document.getElementById('mobile-menu').classList.toggle('hidden');
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('open');
     });
 
     document.getElementById('checkout-form').addEventListener('submit', submitOrder);
@@ -836,5 +1011,5 @@
     loadProducts();
     lucide.createIcons();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f054dee45a870c7',t:'MTc3Njg2Nzk5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f0560a5a46c68cb',t:'MTc3Njg2ODc2Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
